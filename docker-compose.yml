@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  rabbit01:
+    build: ./rabbit
+    hostname: "rabbit01"
+  rabbit02:
+    build: ./rabbit
+    hostname: "rabbit02"
+  rabbit03:
+    build: ./rabbit
+    hostname: "rabbit03"
+
+  proxy:
+    build: ./proxy
+    ports:
+      - "5672:5672"
+      - "1936:1936"
+      - "15672:15672"
