@@ -11,17 +11,24 @@ def send():
     global i
 
     channel = get_channel()
+    channel.confirm_delivery()
 
     channel.queue_declare(queue='hello')
 
     while True:
-        channel.basic_publish(exchange='',
-                              routing_key='hello',
-                              body=str(i))
+        try:
+            sent = channel.basic_publish(exchange='',
+                                         routing_key='hello',
+                                         body=str(i),
+                                         mandatory=True)
+        except Exception:
+            print(f"Failed: {i}")
+            raise
 
-        print(f"Sent '{i}'")
-
-        i += 1
+        if sent:
+            i += 1
+        else:
+            print(f"Didn't send: {i}")
 
 
 if __name__ == '__main__':

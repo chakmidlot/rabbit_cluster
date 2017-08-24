@@ -3,8 +3,17 @@ import pika
 from backend.utils import reconnect, get_channel
 
 
+i = 0
+
+
 def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
+    global i
+
+    data = int(body)
+    if i + 1 != data:
+        print(f"{i}, {data}")
+
+    i = data
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 @reconnect
