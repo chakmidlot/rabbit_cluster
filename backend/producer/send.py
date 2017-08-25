@@ -1,35 +1,35 @@
-import pika
-import time
-
 from backend.utils import reconnect, get_channel
 
 
-i = 0
+class Sender:
 
-@reconnect
-def send():
-    global i
+    def __init__(self):
+        self.channel = None
 
-    channel = get_channel()
-    channel.confirm_delivery()
+    def send(self, items):
+        for item in items:
+            self.send_message(item)
 
-    channel.queue_declare(queue='hello')
+    def send_message(self, item):
+        while True:
+            try:
+                while not self.channel.basic_publish(exchange='',
+                                                     routing_key='hello',
+                                                     body=item,
+                                                     mandatory=True):
+                    print("Resend")
+                return
 
-    while True:
-        try:
-            sent = channel.basic_publish(exchange='',
-                                         routing_key='hello',
-                                         body=str(i),
-                                         mandatory=True)
-        except Exception:
-            print(f"Failed: {i}")
-            raise
+            except Exception:
+                self.connect()
+                print('Connected')
 
-        if sent:
-            i += 1
-        else:
-            print(f"Didn't send: {i}")
+    def connect(self):
+        self.channel = get_channel()
+        self.channel.confirm_delivery()
+
+        self.channel.queue_declare(queue='hello')
 
 
 if __name__ == '__main__':
-    send()
+    Sender().send(['1', '2', '4'])

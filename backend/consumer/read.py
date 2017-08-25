@@ -1,5 +1,3 @@
-import pika
-
 from backend.utils import reconnect, get_channel
 
 

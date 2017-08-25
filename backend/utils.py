@@ -5,10 +5,10 @@ from pika.exceptions import ConnectionClosed
 
 
 def reconnect(func):
-    def wrapper():
+    def wrapper(*args, **kwargs):
         while True:
             try:
-                func()
+                func(*args, **kwargs)
             except ConnectionClosed:
                 traceback.print_exc()
     return wrapper
