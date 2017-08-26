@@ -1,3 +1,5 @@
+import traceback
+
 from backend.utils import reconnect, get_channel
 
 
@@ -21,6 +23,7 @@ class Sender:
                 return
 
             except Exception:
+                traceback.print_exc()
                 self.connect()
                 print('Connected')
 

@@ -1,18 +1,13 @@
 from backend.utils import reconnect, get_channel
 
 
-i = 0
+results = open('data.txt', 'ab')
 
 
 def callback(ch, method, properties, body):
-    global i
-
-    data = int(body)
-    if i + 1 != data:
-        print(f"{i}, {data}")
-
-    i = data
+    results.write(body + b'\n')
     ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
 @reconnect
 def read():

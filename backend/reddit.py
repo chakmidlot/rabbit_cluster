@@ -4,6 +4,8 @@ from time import sleep
 
 import requests
 
+from backend.producer.send import Sender
+
 
 def iter_comments():
         while True:
@@ -17,9 +19,9 @@ def iter_comments():
             else:
                 print(len(parsed_json['data']['children']))
                 for comment in parsed_json['data']['children']:
-                    yield comment['data']
+                    yield json.dumps(comment['data'])
 
 
 if __name__ == '__main__':
-    for comment in iter_comments():
-        pass
+    Sender().send(iter_comments())
+
